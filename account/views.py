@@ -1,12 +1,13 @@
 from django.shortcuts import render,get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse
 from django.contrib.auth import authenticate,login
 from .forms import LoginForm,UserRegistrationForm,UserEditForm,ProfileEditForm
 from django.contrib.auth.decorators import login_required
 from .models import Profile
 from django.contrib import messages
 from django.contrib.auth.models import User
-
+from django.views.decorators.http import require_POST
+from .models import Contact
 # Create your views here.
 
 def user_login(request):
@@ -104,3 +105,20 @@ def user_detail(request,username):
     }
     
     return render(request,'account/user/detail.html',context)
+
+@require_POST
+@login_required
+def user_follow(request):
+    user_id = request.POSt.get('id')
+    action = request.get.POST('action')
+    if user_id and action:
+        try:
+            user = User.objects.get(id=user_id)
+            if action == 'follow':
+                Contact.objects.get_or_create(user_from=request.user,user_to=user)
+            else:
+                Contact.objects.filter(user_from=request.user,user_to=user).delete()
+            return JsonResponse({'status':'ok'})
+        except User.DoesNotExist:
+            return JsonResponse({'status':'error'})
+    return JsonResponse({'status':'error'})
