@@ -32,24 +32,22 @@
         headers: {'X-CSRFToken':csrftoken},
         mode: 'same-origin'
     }
-    console.log('hello')
 
 
     document.querySelector('a.follow').addEventListener('click',function(e){
         e.preventDefault()
         let followButton = this
 
-        // add reqest body
+        // add request body
         let formData = new FormData()
         formData.append('id',followButton.dataset.id)
         formData.append('action',followButton.dataset.action)
         options['body'] = formData
 
         // send HTTP request
-        fetch(url,options).thten(response => response.json()).then(data => {
+        fetch(url,options).then(response => response.json()).then(data => {
             if(data['status'] === 'ok'){
-                let previousAction = followButton.data.action
-
+                let previousAction = followButton.dataset.action
                 // toggle
                 let action = previousAction === 'follow' ? 'unfollow' : 'follow'
                 followButton.dataset.action = action
