@@ -1,4 +1,4 @@
-# Django App Name
+# Social Website app
 
 ## Overview
 
